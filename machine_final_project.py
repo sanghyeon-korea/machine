@@ -121,21 +121,28 @@ def back_propagation(x_n, y_n, v, w, learnig_rate):
 def compute_MSE(y_true, y_pred):
     return np.mean((y_true - y_pred)**2)
 
-# 그레이스케일 변환: RGB 채널 평균
+# 그레이스케일 변환: RGB 채널 평균 -> 밝기 정보만 사용하기 위해 사용함
 def to_gray(img):
     return img.mean(axis=2).astype(np.float32)
 
-# 1) 전체 그레이스케일 평균
+# 1) 전체 그레이스케일 평균 -> 이미지 전체의 픽셀 밝기의 평균을 알기 위해 사용.
+#얼마나 밝은 이미지인지 나타냄
+#과일과 채소의 종류에 따라 밝기의 차이가 분명히 있기 때문에 강력한 특징이라 생각하여 사용
+#예를 들면 수박은 어두운데 바나나는 밝음
 def feature_1(input_data):
     gray = to_gray(input_data)
     return float(gray.mean())
 
 # 2) 전체 그레이스케일 분산
+'''밝기의 분산 -> 대비 정도를 나타내기 위해 사용. 색의 밝기 차이가 거의 없을 떄는 분산이 낮지만
+밝기 차이가 큰 과일은 분산이 높다. 밝기 차이가 높은 과일은 질감이 좀 복잡한 과일 예를 들어 
+블루베리가 있다.'''
 def feature_2(input_data):
     gray = to_gray(input_data)
     return float(gray.var())
 
 # 3) 가로축 투영 PDF → 기댓값
+'''행마다의 밝기의 합을 사용. '''
 def feature_3(input_data):
     gray = to_gray(input_data)
     proj = gray.sum(axis=1)
